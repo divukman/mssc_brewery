@@ -42,6 +42,7 @@ public class BeerControllerTest {
                 .beerName("Karlovacko")
                 .beerStyle("Svijetlo Pivo")
                 .upc(123456789022L)
+
                 .build();
     }
 
@@ -53,7 +54,7 @@ public class BeerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(validBeer.getId().toString())))
-                .andExpect(jsonPath("$.beerName", is("Beer1")));
+                .andExpect(jsonPath("$.beerName", is("Karlovacko")));
     }
 
     @Test
@@ -77,10 +78,12 @@ public class BeerControllerTest {
     public void handleUpdate() throws Exception {
         //given
         BeerDto beerDto = validBeer;
+        final UUID uuid = validBeer.getId();
+        validBeer.setId(null);
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
         //when
-        mockMvc.perform(put("/api/v1/beer/" + validBeer.getId())
+        mockMvc.perform(put("/api/v1/beer/" + uuid)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
                 .andExpect(status().isNoContent());

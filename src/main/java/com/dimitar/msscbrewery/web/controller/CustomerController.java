@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1/customer")
 public class CustomerController {
@@ -28,7 +31,7 @@ public class CustomerController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> handlePost(final @RequestBody CustomerDto customerDto) {
+    public ResponseEntity<?> handlePost(final @Valid @RequestBody CustomerDto customerDto) {
         final CustomerDto savedCustomer = customerService.save(customerDto);
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Location", "/api/v1/customer/" + savedCustomer.getId());
@@ -37,7 +40,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<?> handlePut(@PathVariable("customerId") UUID customerId, final @RequestBody CustomerDto customerDto){
+    public ResponseEntity<?> handlePut(@PathVariable("customerId") UUID customerId, final @Valid @RequestBody CustomerDto customerDto){
         customerService.updateCustomer(customerId, customerDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
